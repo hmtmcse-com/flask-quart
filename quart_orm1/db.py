@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import select, func
+from sqlalchemy import select, func, and_
 from contextvars import ContextVar
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -89,6 +89,19 @@ def bind_base(db: AsyncSQLAlchemy):
             stmt = select(cls).where(cls.id == id_)
             result = await db.session.execute(stmt)
             return result.scalar_one_or_none()
+
+        @classmethod
+        async def filter_by(cls, **kwargs):
+            """
+            Simple filter method supporting exact match filtering.
+            Example usage:
+              await User.filter_by(name="Alice")
+            """
+            session = cls._db.session
+            conditions = [getattr(cls, k) == v for k, v in kwargs.items()]
+            stmt = select(cls).where(and_(*conditions))
+            result = await session.execute(stmt)
+            return result.scalars().all()
 
         @classmethod
         async def paginate(cls, page=1, page_size=10):

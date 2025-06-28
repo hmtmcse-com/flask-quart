@@ -17,6 +17,18 @@ async def list_users():
     result = await User.paginate(page, page_size)
     return result.as_dict()
 
+
+@app.route("/users/filter")
+async def filter_users():
+    name = request.args.get("name")
+    if not name:
+        return {"error": "Missing 'name' parameter"}, 400
+
+    users_named_alice = await User.filter_by(name=name)
+    users_data = [user.as_dict() for user in users_named_alice]
+
+    return {"users": users_data}
+
 @app.route("/seed")
 async def seed():
     async with db.transaction() as session:
