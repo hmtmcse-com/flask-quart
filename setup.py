@@ -10,7 +10,9 @@ env = os.environ.get('source')
 
 def get_dependencies():
     dependency = [
-        "Quart"
+        "Quart",
+        "SQLAlchemy",
+        "aiosqlite"
     ]
 
     if env and env == "dev":

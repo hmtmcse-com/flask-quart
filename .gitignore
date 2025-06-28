@@ -15,4 +15,5 @@ build/
 
 .idea
 *.sqlite
+*.sqlite3
 
