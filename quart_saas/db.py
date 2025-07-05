@@ -10,6 +10,7 @@ Base = declarative_base()
 _session_ctx: ContextVar[Optional[AsyncSession]] = ContextVar("session_ctx", default=None)
 
 class MultiTenantSQLAlchemy:
+
     def __init__(self):
         self.engines: Dict[str, any] = {}
         self.sessions: Dict[str, async_sessionmaker] = {}
