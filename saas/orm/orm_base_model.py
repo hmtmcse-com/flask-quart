@@ -11,6 +11,7 @@ def camel_to_snake_case(name: str) -> str:
 class ORMBaseModel(DeclarativeBase, MappedAsDataclass):
 
     def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
         if not hasattr(cls, "__tablename__"):
             cls.__tablename__ = camel_to_snake_case(cls.__name__)
+
+        super().__init_subclass__(**kwargs)

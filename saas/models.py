@@ -13,3 +13,8 @@ class Book(ORMBaseModel):
     pages: int = saas_orm.Column("pages", saas_orm.Integer())
     authorId: int = saas_orm.Column("author_id", saas_orm.BigInteger(), saas_orm.ForeignKey("Author.id"), nullable=False)
     author = saas_orm.Relationship("Author", back_populates="book")
+
+
+
+def load():
+    print("Loaded")
