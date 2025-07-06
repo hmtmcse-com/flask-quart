@@ -2,6 +2,7 @@ from contextvars import ContextVar
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from saas.orm.orm_actions import ORMActions
+from saas.orm.orm_base_model import ORMBaseModel
 from saas.orm.orm_data import DBConnectionData
 from saas.orm.orm_properties import ORMProperties
 
@@ -15,7 +16,7 @@ class SaaSORM(ORMProperties, ORMActions):
         connection_data: DBConnectionData = self.get_engine_connection_data(db_key=db_key)
 
         if connection_data is None:
-            pass  # Raise exception
+            return  # Raise exception
 
         engine = create_async_engine(
             connection_data.uri,
@@ -51,6 +52,44 @@ class SaaSORM(ORMProperties, ORMActions):
         if session:
             await session.close()
         _orm_session_context.set(None)
+
+    async def _create_drop_model_by_data(self, db_key: str, models, action: str = "create"):
+        engine = self.get_engine(db_key=db_key)
+        if not engine:
+            print(f" engine for {db_key} not found, skipping")
+            return
+
+        async with engine.begin() as connection:
+            if action == "create":
+                await connection.run_sync(
+                    lambda sync_connection: ORMBaseModel.metadata.create_all(
+                        sync_connection,
+                        tables=models
+                    )
+                )
+                print(f"Created tables for db_key={db_key}")
+            elif action == "drop":
+                await connection.run_sync(
+                    lambda sync_connection: ORMBaseModel.metadata.drop_all(
+                        sync_connection,
+                        tables=models
+                    )
+                )
+                print(f"Dropped tables for db_key={db_key}")
+            else:
+                print("Unknown action")
+
+    async def create_drop_all_model(self, action: str = "create"):
+        db_key_to_models = self.get_db_key_and_model_dict()
+        for db_key, tables in db_key_to_models.items():
+            await self._create_drop_model_by_data(db_key=db_key, models=tables, action=action)
+
+    async def create_drop_default_model_by_db_key(self, db_key: str, action: str = "create"):
+        db_key_to_models = self.get_db_key_and_model_dict()
+        default_models = None
+        if None in db_key_to_models:
+            default_models = db_key_to_models[None]
+        await self._create_drop_model_by_data(db_key=db_key, models=default_models, action=action)
 
 
 saas_orm = SaaSORM()

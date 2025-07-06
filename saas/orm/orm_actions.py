@@ -40,7 +40,7 @@ class ORMActions:
 
         return connection_data
 
-    def get_db_key_and_model_list(self) -> dict:
+    def get_db_key_and_model_dict(self) -> dict:
         db_key_to_models = {}
         for cls in ORMBaseModel.registry.mappers:
             model = cls.class_

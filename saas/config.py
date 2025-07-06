@@ -1,6 +1,8 @@
 class Config:
-    DB_CONNECTION_URI : str = ""
-    DB_MULTI_CONNECTION_URIS : dict[str, str] = {}
+    DB_CONNECTION_URI : str = "sqlite+aiosqlite:///default-db.sqlite3"
+    DB_MULTI_CONNECTION_URIS : dict[str, str] = {
+        "SaaS": "sqlite+aiosqlite:///saas.sqlite3"
+    }
     DB_PRINT_LOG: bool = False
     DB_EXPIRE_ON_COMMIT: bool = False
 
