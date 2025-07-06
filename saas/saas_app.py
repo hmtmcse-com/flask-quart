@@ -2,6 +2,7 @@ from quart import Quart
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from saas.models import load
 from saas.orm.orm_base_model import ORMBaseModel
+from saas.orm.saas_orm import saas_orm
 
 saas_app = Quart(__name__)
 
@@ -14,6 +15,7 @@ load()
 
 @saas_app.before_serving
 async def startup():
+    saas_orm.get_db_key_and_model_list()
     async with engine.begin() as conn:
         await conn.run_sync(ORMBaseModel.metadata.create_all)
 

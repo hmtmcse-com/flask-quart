@@ -15,6 +15,12 @@ class Book(ORMBaseModel):
     author = saas_orm.Relationship("Author", back_populates="book")
 
 
+class Operator(ORMBaseModel):
+    __db_key__ = "SaaS"
+    id: int = saas_orm.Column("id", saas_orm.BigInteger(), primary_key=True, autoincrement=True)
+    name: str = saas_orm.Column("name", saas_orm.String(), nullable=False)
+
+
 
 def load():
     print("Loaded")

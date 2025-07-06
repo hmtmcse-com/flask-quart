@@ -1,0 +1,17 @@
+
+
+== In Quart
+```
+@app.before_request   -> Set Tenant
+
+@app.after_request  -> Close Session
+
+@app.teardown_request -> Commit or rollback
+```
+
+== What to handle
+* Work on none SaaS Mode
+* Work on Multi Worker
+* Register Tenant Dynamically
+* Allow Custom Tenant Resolver  -> Should be sync
+

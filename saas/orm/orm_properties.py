@@ -3,8 +3,8 @@ from sqlalchemy import (
     Integer, String, Boolean, DateTime, Date, Float, Text, BigInteger, Time, SmallInteger,
     ForeignKey
 )
-from sqlalchemy.orm import MappedColumn, relationship, Relationship
-from sqlalchemy.sql.base import _NoArg, SchemaEventTarget
+from sqlalchemy.orm import MappedColumn, relationship
+from sqlalchemy.sql.base import _NoArg
 
 LazyLoadType = Literal[
     "select",
