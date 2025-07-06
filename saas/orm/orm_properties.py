@@ -4,7 +4,7 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.orm import MappedColumn, relationship, Relationship
-from sqlalchemy.sql.base import _NoArg
+from sqlalchemy.sql.base import _NoArg, SchemaEventTarget
 
 LazyLoadType = Literal[
     "select",
@@ -34,10 +34,19 @@ class ORMProperties:
                unique: bool = None,
                index: bool = None,
                default: Optional[Any] = _NoArg.NO_ARG,
+               **kw: Any,
                ) -> MappedColumn:
+
+        argument_list = []
+        if foreign_key is not None:
+            argument_list.append(foreign_key)
+        argument = tuple(argument_list)
+
         return MappedColumn(
-            name=name, type_=data_type, primary_key=primary_key, index=index, foreign_key=foreign_key,
+            *argument,
+            name=name, type_=data_type, primary_key=primary_key, index=index,
             unique=unique, default=default, autoincrement=autoincrement, nullable=nullable,
+            **kw,
         )
 
     def Integer(self):
